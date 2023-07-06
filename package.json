@@ -1,0 +1,13 @@
+{
+  "name": "hardhat-project",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.16.1"
+  },
+  "dependencies": {
+    "@amaui/lz77": "^1.0.11154",
+    "@openzeppelin/contracts": "^4.9.2"
+  }
+}
