@@ -1,0 +1,8 @@
+{
+   "HOST": "localhost",
+   "PORT": 9000,
+   "REFRESH_TOKEN_SECRET": "",
+   "ACCESS_TOKEN_SECRET": "",
+   "saltRounds": 10,
+   "production": false
+}
