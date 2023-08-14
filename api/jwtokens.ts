@@ -7,7 +7,7 @@ const { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET, production } = require("./con
 export const jwtCreateAccessToken = (user: User) => {
     const payload = {
         userId: user.id,
-        userName: user.userName,
+        username: user.username,
         userRole: user.role,
     }
 
@@ -39,7 +39,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
             // @ts-ignore
             req.userId = payload.userId;
             // @ts-ignore
-            req.userName = payload.userName;
+            req.username = payload.username;
             // @ts-ignore
             req.userRole = payload.userRole;
 
@@ -54,8 +54,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
         }
         try {
             payload = verify(refreshToken, REFRESH_TOKEN_SECRET);
-            //@ts-ignore
-            User.findOne({ id: payload.userId }).then(user => {
+            User.findOneBy({ id: payload.userId }).then(user => {
                 // throw new Error("Wrong refreshToken");
                 if (!user) return next();
     
@@ -81,7 +80,8 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
             });
     
         } catch {
-            return next()            
+            // throw new Error("Wrong refreshToken");
+            return next()
         }
 
     } 
