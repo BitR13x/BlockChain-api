@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { MyDataSource } from "./ormconfig";
 import path from 'path';
-import bcrypt from 'bcrypt';
 import "reflect-metadata"
 import cors from 'cors';
 import bodyParser from "body-parser";
@@ -10,11 +9,10 @@ const compression = require('compression');
 const cookieParser = require("cookie-parser");
 const hpp = require('hpp');
 
-import { Router } from "./api/routes/index";
+import { accountRouter } from "./api/routes/account";
 import { testAPIRouter } from "./api/routes/testAPI";
+import { blockchainRouter } from "./api/routes/blockchain";
 const { HOST, PORT } = require('./config.json');
-import { jwtCreateAccessToken, jwtCreateRefreshToken, isAuth } from "./api/jwtokens";
-
 
 const app = express();
 
@@ -30,10 +28,9 @@ app.use(helmet());
 app.use(hpp());
 app.use(compression())
 
-app.use("/api", Router);
+app.use("/api", accountRouter);
+app.use("/api/blockchain", blockchainRouter)
 app.use("/~testAPI", testAPIRouter);
-
-// catch 404 and forward to error handler
 
 //? custom 404 not found
 app.get('*', (_req: Request, res: Response) => {
@@ -47,3 +44,5 @@ MyDataSource.initialize().then(() => {
         console.log(`Web App listening at http://${HOST}:${PORT}`)
     });
 })
+
+export default app;

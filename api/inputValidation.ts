@@ -9,7 +9,7 @@ interface inputObject {
 };
 
 
-export const inputValidate = ( inputObject: inputObject ) => {
+export const inputValidate = ( inputObject: inputObject ): [ any, inputObject ] => {
     const schema = Joi.object({
         username: Joi.string()
             .alphanum()

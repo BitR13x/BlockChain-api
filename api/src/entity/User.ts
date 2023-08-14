@@ -9,11 +9,14 @@ export class User extends BaseEntity {
     @Column({ type: "text" })
     role: string;
 
-    @Column({ type: "text", unique: true })
+    @Column({ type: "text" })
+    address: string;
+
+    @Column({ type: "text", unique: true, default: "" })
     email: string;
 
     @Column({ unique: true, type: "varchar", length: "130" })
-    userName: string;
+    username: string;
 
     @Column({ type: "text" })
     hsPassword: string;
