@@ -1,9 +1,0 @@
-{
-   "HOST": "localhost",
-   "BLOCKNETWORK": "http://127.0.0.1:8545",
-   "PORT": 8000,
-   "MORALIS_API_KEY": "",
-   "REFRESH_TOKEN_SECRET": "",
-   "ACCESS_TOKEN_SECRET": "",
-   "production": false
-}
