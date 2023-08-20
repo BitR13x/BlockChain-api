@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { verify, sign } from "jsonwebtoken";
 import { User } from "./src/entity/User";
 
-const { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET, production } = require("./config.json");
+import { REFRESH_TOKEN_SECRET, ACCESS_TOKEN_SECRET, production } from "../config";
 
 export const jwtCreateAccessToken = (user: User) => {
     const payload = {
@@ -24,15 +24,15 @@ export const jwtCreateRefreshToken = (user: User) => {
 };
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-    const accessToken = req.cookies.accessToken;
-    const refreshToken = req.cookies.jid;
+    const accessToken: string = req.cookies.accessToken;
+    const refreshToken: string = req.cookies.jid;
 
     try {
         //? verifying accessToken
         if (!accessToken) {
             // throw new Error("Bad accessToken");
             return next();
-        }
+        };
         var payload = verify(accessToken, ACCESS_TOKEN_SECRET);
 
         if (payload) {
@@ -44,7 +44,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
             req.userRole = payload.userRole;
 
             return next();
-        }
+        };
 
     } catch {
         //? working with refreshToken if accessToken expired
@@ -60,8 +60,8 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
     
                 if (user.tokenVersion !== payload.tokenVersion) {
                     // throw new Error("Wrong tokenVersion");
-                    return next();;
-                }
+                    return next();
+                };
     
                 // @ts-ignore
                 req.userId = user.id;
@@ -76,7 +76,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
                     sameSite: true
                 });
     
-                return next()
+                return next();
             });
     
         } catch {
