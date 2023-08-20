@@ -16,7 +16,7 @@ contract Data is Ownable {
         string memory _hash_data,
         bool _visibility
     ) payable {
-        require(bytes(data).length > 0, "Invalid data.");
+        //require(bytes(data).length < 0, "Invalid data.");
 
         data = _data;
         hash_data = keccak256(abi.encodePacked(_hash_data));
@@ -27,6 +27,10 @@ contract Data is Ownable {
         }
 
         //owner = payable(msg.sender);
+    }
+
+    function printOutData() external view onlyOwner returns (string memory) {
+        return data;
     }
 
     function verify(string memory _hash) external view returns (bool) {
