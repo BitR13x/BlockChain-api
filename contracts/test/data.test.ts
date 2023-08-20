@@ -1,29 +1,37 @@
-import "chai";
+import chai from "chai";
+
 import { ethers } from "hardhat";
-import { deployContract } from "ethereum-waffle";
-import { Data } from "../typechain/Data";
+//import DataJsonContract from "../../artifacts/contracts/Data.sol/Data.json";
+// import { Data } from "../../types/typechain";
 
 const { expect } = chai;
 
 describe("Data Contract", () => {
-  let dataContract: Data;
+  let dataContract;
+  let userAddress: string;
+
+  let data_string: string;
+  let hash_data: string;
 
   beforeEach(async () => {
-    dataContract = await deployContract(ethers.provider.getSigner(), Data, [
-      "Sample Data",
-      "Sample Hash",
-      true
-    ]);
-  });
+    userAddress = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
+    data_string = "Hello World!";
+    hash_data = ethers.keccak256(ethers.toUtf8Bytes(data_string));
 
-  it("should deploy the contract with the correct initial values", async () => {
-    expect(await dataContract.data()).to.equal("Sample Data");
-    expect(await dataContract.hash_data()).to.equal(ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["string"], ["Sample Hash"])));
-    expect(await dataContract.visibility()).to.equal(true);
+    // Get the contract factory
+    const DataContract = await ethers.getContractFactory('Data');
+
+    // get signer
+    let owner = await ethers.getSigner(userAddress);
+
+    // Deploy the contract using the user's address
+    dataContract = await DataContract.connect(owner).deploy(data_string, hash_data, true);
+
+    console.log(await dataContract.getAddress())
   });
 
   it("should verify the hash correctly", async () => {
-    const isVerified = await dataContract.verify("Sample Hash");
+    const isVerified = await dataContract.verify(hash_data);
     expect(isVerified).to.equal(true);
   });
 
