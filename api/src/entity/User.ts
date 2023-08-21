@@ -3,13 +3,13 @@ import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, CreateDateColumn } 
 @Entity()
 export class User extends BaseEntity {
 
-    @PrimaryGeneratedColumn({ type: "int" })
-    id: number;
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
-    @Column({ type: "text" })
+    @Column({ type: "text", default: "user" })
     role: string;
 
-    @Column({ type: "text" })
+    @Column({ type: "text", default: "" })
     address: string;
 
     @Column({ type: "text", unique: true, default: "" })
