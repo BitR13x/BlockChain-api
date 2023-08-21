@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
+router.get("/", (req: Request, res: Response, next: NextFunction) => {
     return res.send({message: "API is working properly"});
 });
 
