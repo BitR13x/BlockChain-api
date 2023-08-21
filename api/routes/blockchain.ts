@@ -31,7 +31,7 @@ router.post("/authenticate", async (req: Request, res: Response) => {
     let web3 = new Web3(new Web3.providers.HttpProvider(BLOCKNETWORK));
     //? Verify nonce
     if ( !message || !signature || !address ) {
-        return res.status(403).send({message: "Missing signature, message or address!"});
+        return res.status(403).json({message: "Missing signature, message or address!"});
     };
     try {
         let recoveredAddress = web3.eth.accounts.recover(message, signature);
@@ -56,15 +56,15 @@ router.post("/authenticate", async (req: Request, res: Response) => {
                 sameSite: true
             });
 
-            return res.status(200).send({ message: "Success" });
+            return res.status(200).json({ message: "Success" });
         } else {
-            return res.status(403).send({ message: "Failed!",
+            return res.status(403).json({ message: "Failed!",
                                           error: "Recovered address does not equal to original address!"
                                         });
         };
     } catch(e) {
         logger.error(e);
-        return res.status(403).send({ message: "Failed!", error: e.message });
+        return res.status(403).json({ message: "Failed!", error: e.message });
     };
 });
 
@@ -73,12 +73,12 @@ router.get('/contract-info/:address', isAuth, async (req, res) => {
     var userId : string = req.userId;
     if (userId) {
         const contractAddress = req.params.address;
-        if (!contractAddress) return res.status(403).send({ message: "Address required!" });
+        if (!contractAddress) return res.status(403).json({ message: "Address required!" });
 
         const contractInfo = await getContractInfo(contractAddress);
         return res.status(200).json(contractInfo);
     } else {
-        return res.status(403).send({ message: "You're not logged in!" });
+        return res.status(403).json({ message: "You're not logged in!" });
     };
 });
 
@@ -88,7 +88,7 @@ router.post("/deploy", isAuth, async (req: Request, res: Response) => {
     if (userId) {
         const { userAddress, data, hash, visibility } = req.body;
         if (!userAddress || !data || !hash || !visibility) {
-            return res.status(403).send({ message: "Missing address or data or hash!" });
+            return res.status(403).json({ message: "Missing address or data or hash!" });
         };
 
         const DataContract = await ethers.getContractFactory('Data');
@@ -96,9 +96,9 @@ router.post("/deploy", isAuth, async (req: Request, res: Response) => {
         let dataContract = await DataContract.connect(owner).deploy(data, hash, true);
 
         //await dataContract.getAddress()
-        return res.status(200).send({ message: "Success", contract_address: dataContract.target });
+        return res.status(200).json({ message: "Success", contract_address: dataContract.target });
     } else {
-        return res.status(403).send({ message: "You're not logged in!" });
+        return res.status(403).json({ message: "You're not logged in!" });
     };
 });
 

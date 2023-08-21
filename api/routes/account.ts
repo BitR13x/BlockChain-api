@@ -23,7 +23,7 @@ router.post('/login', AccountLimiter, async (req: Request, res: Response) => {
     var username: string = req.body.user;
     var password: string = req.body.password;
     if (!username || !password) {
-        return res.status(403).send({message: "Missing username or password!"});
+        return res.status(403).json({message: "Missing username or password!"});
     };
   
     // verify string
@@ -41,7 +41,7 @@ router.post('/login', AccountLimiter, async (req: Request, res: Response) => {
 
 
     if (message){
-      return res.status(422).send({ message: message });
+      return res.status(422).json({ message: message });
     } else {
       
         if (username.includes("@")){
@@ -49,7 +49,7 @@ router.post('/login', AccountLimiter, async (req: Request, res: Response) => {
         } else {
             var user : User = await User.findOneBy({ username: value.username }) as User;
         }
-        if (!user) return res.status(403).send({ message: "Wrong username or password!" });
+        if (!user) return res.status(403).json({ message: "Wrong username or password!" });
       
       try {
           if (await argon2.verify(user.hsPassword, value.password)) {
@@ -65,14 +65,14 @@ router.post('/login', AccountLimiter, async (req: Request, res: Response) => {
                 sameSite: true
               });
   
-              return res.status(200).send({ message: "Success" });
+              return res.status(200).json({ message: "Success" });
         } else {
-              return res.status(403).send({ message: "Failed" });
+              return res.status(403).json({ message: "Failed" });
         };
       } catch (err) {
           // internal failure
           logger.error(err);
-          return res.status(500).send({ message: "Something went wrong!"});
+          return res.status(500).json({ message: "Something went wrong!"});
       };
     };
 });
@@ -83,7 +83,7 @@ router.post('/register', AccountLimiter, async (req: Request, res: Response) => 
     var username: string = req.body.user;
     var password: string = req.body.password;
     if (!username || !password ) {
-      return res.status(403).send({
+      return res.status(403).json({
         message: "You must specify username, password!"
       });
     };
@@ -106,7 +106,7 @@ router.post('/register', AccountLimiter, async (req: Request, res: Response) => 
         email = "";
     };
 
-    if (message) return res.status(422).send({ message: message });
+    if (message) return res.status(422).json({ message: message });
 
     username = sanitizeHtml(value.username, { allowedTags: false,
       allowedAttributes: false, allowVulnerableTags: false });
@@ -116,7 +116,7 @@ router.post('/register', AccountLimiter, async (req: Request, res: Response) => 
       let userTest_email = null;
       let userTest_user = await User.findOneBy({ username: username });
       if (email) userTest_email = await User.findOneBy({ email: email });
-      if (userTest_email || userTest_user) return res.status(403).send({ message: "User already exists!" });
+      if (userTest_email || userTest_user) return res.status(403).json({ message: "User already exists!" });
     } catch (err) {
       logger.error(err);
     };
@@ -131,10 +131,10 @@ router.post('/register', AccountLimiter, async (req: Request, res: Response) => 
 
     } catch (err) {
         logger.error(err);
-        return res.status(500).send("Something went wrong!");
+        return res.status(500).json("Something went wrong!");
     };
-    //? MailSend({ sendTo: email, username: username });
-    return res.status(200).send({ message: "Success" });
+    //? Mailjson({ jsonTo: email, username: username });
+    return res.status(200).json({ message: "Success" });
 });
 
 
@@ -142,14 +142,14 @@ router.post('/delete/account', isAuth, async (req: Request, res: Response) => {
     //@ts-ignore
     let userId : string = req.userId;
     if (!userId) {
-        return res.status(401).send({ message: "You're not logged in!"});
+        return res.status(401).json({ message: "You're not logged in!"});
     } else {
         const user : User = await User.findOneBy({id: userId});
         if (!user) {
-            return res.status(404).send({message: "Account not found!"});
+            return res.status(404).json({message: "Account not found!"});
         } else {
             await user.remove();
-            return res.status(200).send({message: "Success"});
+            return res.status(200).json({message: "Success"});
         };
     };
 });
@@ -163,11 +163,11 @@ router.post("/logout", isAuth, (req: Request, res: Response) => {
           return res
             .clearCookie("accessToken")
             .clearCookie("jid")
-            .status(200).send({ message: "Successfully logged off" });
+            .status(200).json({ message: "Successfully logged off" });
       })
         
     } else {
-        return res.status(401).send({ message: "You're not logged in!" });
+        return res.status(401).json({ message: "You're not logged in!" });
     };
 });
 
