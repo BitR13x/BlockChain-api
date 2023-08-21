@@ -1,3 +1,9 @@
+import Web3 from 'web3';
+import { BLOCKNETWORK } from '../../config';
+
+export const web3 = new Web3(new Web3.providers.HttpProvider(BLOCKNETWORK));
+
+
 const getCurrentFormattedTime = () => {
     let now = new Date();
     let year = now.getFullYear();

@@ -1,9 +1,8 @@
 import express, { Request, Response } from 'express';
-import Web3 from 'web3';
 import { ethers } from "hardhat";
 
-import { BLOCKNETWORK, HOST, PORT, production } from "../../config";
-import { getCurrentFormattedTime } from './utils';
+import { production } from "../../config";
+import { getCurrentFormattedTime, web3 } from '../utils';
 import { getContractInfo } from '../../scripts/contract-utils';
 import { isAuth, jwtCreateAccessToken, jwtCreateRefreshToken } from '../jwtokens';
 import { User } from '../src/entity/User';
@@ -28,7 +27,6 @@ router.post('/request-nonce', async (req: Request, res: Response) => {
 
 router.post("/authenticate", async (req: Request, res: Response) => {
     const { message, signature, address } = req.body;
-    let web3 = new Web3(new Web3.providers.HttpProvider(BLOCKNETWORK));
     //? Verify nonce
     if ( !message || !signature || !address ) {
         return res.status(403).json({message: "Missing signature, message or address!"});
