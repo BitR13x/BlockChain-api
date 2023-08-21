@@ -8,5 +8,7 @@
     "resolveJsonModule": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-  }
+  },
+  "include": ["./api/**/*", "./scripts/*", "./test/**/*", "./contracts/test/*"],
+  "files": ["./hardhat.config.ts", "./app.ts", "./config.ts", "ormconfig.ts"]
 }
