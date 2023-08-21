@@ -6,6 +6,10 @@ import { expect } from 'chai';
 
 describe("Database Test", () => {
     it("should create a user ", async () => {
+        let user = await User.findOneBy({username: "test"})
+        if (user) {
+            await user.remove();
+        };
         await User.create({
             username: "test",
             hsPassword: await argon2.hash("testpassword")
