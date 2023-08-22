@@ -14,6 +14,7 @@ import { accountRouter } from "./api/routes/account";
 import { testAPIRouter } from "./api/routes/testAPI";
 import { blockchainRouter } from "./api/routes/blockchain";
 import { HOST, PORT, MORALIS_API_KEY } from './config';
+import { ProfileRouter } from "./api/routes/profile";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(hpp());
 app.use(compression());
 
 app.use("/api", accountRouter);
+app.use("/api/profile", ProfileRouter);
 app.use("/api/blockchain", blockchainRouter)
 app.use("/~testAPI", testAPIRouter);
 
