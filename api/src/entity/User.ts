@@ -12,13 +12,14 @@ export class User extends BaseEntity {
     @Column({ type: "text", default: "" })
     address: string;
 
-    @Column({ type: "text", unique: true, default: "" })
+    @Column({ type: "text", nullable: true, unique: true })
     email: string;
 
     @Column({ unique: true, type: "varchar", length: "130" })
     username: string;
 
-    @Column({ type: "text" })
+    // this field will be still requested in hashed form meaning we can use plain as default
+    @Column({ type: "text", default: "temp" })
     hsPassword: string;
 
     @Column({ type: "int", default: 0 })
