@@ -21,7 +21,7 @@ router.post("/change-password", isAuth, async (req: Request, res: Response, next
         if (!user) return res.status(404).json({message: "User not found!"});
 
         try {
-            if (!user.hsPassword) {
+            if (user.hsPassword === "temp") {
                 user.hsPassword = await argon2.hash(newPassword);
                 return res.status(200).json({message: "Success"});
             };
@@ -39,7 +39,7 @@ router.post("/change-password", isAuth, async (req: Request, res: Response, next
         };
 
     } else {
-        return res.status(200).json({message: "You are not logged in!"});
+        return res.status(401).json({message: "You are not logged in!"});
     };
 });
 
@@ -66,7 +66,7 @@ router.post("/change-username", isAuth, async (req: Request, res: Response, next
         return res.status(200).json({message: "Success"});
 
     } else {
-        return res.status(200).json({message: "You are not logged in!"});
+        return res.status(401).json({message: "You are not logged in!"});
     };
 });
 
@@ -83,24 +83,28 @@ router.post("/change-address", isAuth, async (req: Request, res: Response, next:
         if ( !message || !signature || !address ) {
             return res.status(403).json({message: "Missing signature, message or address!"});
         };
-        let recoveredAddress = web3.eth.accounts.recover(message, signature);
-        if (recoveredAddress.toLocaleLowerCase() === address.toLocaleLowerCase()) {
-            if (await User.findOneBy({address: address.toLocaleLowerCase()})) {
-                return res.status(403).json({message: "User already exists with this username!"}); 
+        try {
+            let recoveredAddress = web3.eth.accounts.recover(message, signature);
+            if (recoveredAddress.toLocaleLowerCase() === address.toLocaleLowerCase()) {
+                if (await User.findOneBy({address: address.toLocaleLowerCase()})) {
+                    return res.status(403).json({message: "User already exists with this username!"}); 
+                };
+
+                user.address = address;
+                await user.save();
+
+                return res.status(200).json({message: "Success"});
+            } else {
+                return res.status(403).json({ message: "Failed!",
+                                            error: "Recovered address does not equal to original address!"
+                                            });
             };
-
-            user.address = address;
-            await user.save();
-
-            return res.status(200).json({message: "Success"});
-        } else {
-            return res.status(403).json({ message: "Failed!",
-                                          error: "Recovered address does not equal to original address!"
-                                        });
+        } catch(e) {
+            logger.error(e);
+            return res.status(403).json({ message: "Failed!", error: e.message });
         };
-
     } else {
-        return res.status(200).json({message: "You are not logged in!"});
+        return res.status(401).json({message: "You are not logged in!"});
     };
 });
 
