@@ -123,11 +123,18 @@ router.post('/register', AccountLimiter, async (req: Request, res: Response) => 
 
     try {
         const hash = await argon2.hash(password);
-        User.create({
-          email: email,
-          username: username,
-          hsPassword: hash,
-        }).save();
+        if (email) {
+          User.create({
+            email: email,
+            username: username,
+            hsPassword: hash,
+          }).save();  
+        } else {
+          User.create({
+            username: username,
+            hsPassword: hash,
+          }).save();  
+        };
 
     } catch (err) {
         logger.error(err);
