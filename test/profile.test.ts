@@ -187,6 +187,46 @@ describe('Profile Routes', () => {
     });
   });
 
+  describe('POST /api/change-email', () => {
+    it('should return 422 if email is invalid', async () => {
+      const response = await request(app)
+        .post('/api/change-email')
+        .set('Cookie', [`accessToken=${accessToken}`, `jid=${refreshToken}`])
+        .send({
+          email: 'i',
+        });
+
+      expect(response.status).to.equal(422);
+    });
+
+    it('should return 403 if email already exists', async () => {
+      // Create another user with the conflicting email
+      const conflictingUser = await User.create({
+        username: "conflictinguser",
+        email: 'conflictinguser@example.com',
+      }).save();
+
+      const response = await request(app)
+        .post('/api/change-email')
+        .set('Cookie', [`accessToken=${accessToken}`, `jid=${refreshToken}`])
+        .send({
+          email: conflictingUser.email,
+        });
+
+      expect(response.status).to.equal(403);
+
+      // Clean up: Delete the conflicting user
+      await conflictingUser.remove();
+    });
+
+    it('should return 401 if user is not authenticated', async () => {
+      const response = await request(app)
+        .post('/api/change-email')
+  
+      expect(response.status).to.equal(401);
+      expect(response.body.message).to.equal("You are not logged in!");
+    });
+  });
 
   describe('POST /api/change-address', () => {
     it('should return 200 if successful change', async () => {

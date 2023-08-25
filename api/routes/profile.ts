@@ -71,6 +71,33 @@ router.post("/change-username", isAuth, async (req: Request, res: Response, next
 });
 
 
+router.post("/change-email", isAuth, async (req: Request, res: Response, next: NextFunction) => {
+    //@ts-ignore
+    let userId : string = req.userId;
+    if (userId) {
+        let user = await User.findOneBy({id: userId});
+        if (!user) return res.status(404).json({message: "User not found!"});
+        let email = req.body.email;
+        if (!email) return res.status(403).json({message: "Missing email!"});
+        // check if valid username
+        let [ message, value ] = inputValidate({ email: email });
+        if (message) return res.status(422).json({ message: message });
+
+        if (await User.findOneBy({email: value.email})) {
+            return res.status(403).json({message: "User already exists with this username!"}); 
+        };
+
+        user.email = value.email;
+        await user.save();
+
+        return res.status(200).json({message: "Success"});
+
+    } else {
+        return res.status(401).json({message: "You are not logged in!"});
+    };
+});
+
+
 router.post("/change-address", isAuth, async (req: Request, res: Response, next: NextFunction) => {
     //@ts-ignore
     let userId : string = req.userId;
