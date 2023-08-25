@@ -95,6 +95,8 @@ List and briefly explain the API endpoints your backend provides.
   - `POST /contract-info/:address` - get own Data contract name and symbol.
 - `/~testAPI` - just test for status of server.
 
-### fetch smart contract ABI
+## Bonus
+
+### Fetch smart contract ABI
 
 https://abidata.net/
