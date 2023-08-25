@@ -29,7 +29,8 @@ export const TestDataSource = new DataSource({
    "password": "password",
    "database": "blockchain-test",
    "synchronize": true,
-   "logging": true,
+   "logging": false,
+   "dropSchema": true,
    "entities": [
       "api/src/entity/**/*.ts"
    ],
