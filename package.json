@@ -33,7 +33,7 @@
     "@types/node": "^20.4.10",
     "@types/sanitize-html": "^2.9.0",
     "@types/supertest": "^2.0.12",
-    "mocha": "^10.2.0",
+    "mocha": "^10.8.2",
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
